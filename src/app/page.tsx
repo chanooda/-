@@ -1,3 +1,9 @@
+import { Map } from "@components";
+
 export default function Home() {
-  return <main className="w-full"></main>;
+  return (
+    <main className="w-full">
+      <Map />
+    </main>
+  );
 }

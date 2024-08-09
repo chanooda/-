@@ -18,8 +18,8 @@
       }
     ],
     "paths": {
-      "@component": ["./component"],
-      "@component/*": ["./src/component/*"],
+      "@components": ["./src/components"],
+      "@components/*": ["./src/components/*"],
       "@constant": ["./src/constant"],
       "@constant/*": ["./src/constant/*"],
       "@@types": ["./src/types"],
