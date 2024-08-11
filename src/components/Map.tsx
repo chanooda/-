@@ -2,10 +2,9 @@
 
 import { ClientMap, useLocation } from "@libs";
 import { MapTrack } from "@libs/map/mapTrack.class";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 export const Map = () => {
-  const initialFlag = useRef(false);
   const { location } = useLocation();
 
   useEffect(() => {
