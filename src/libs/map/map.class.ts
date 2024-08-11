@@ -1,34 +1,20 @@
-import { getMapCircleSize } from "./map.const";
-
 export class ClientMap {
-  private map: naver.maps.Map;
-  private circle: naver.maps.Circle;
+  private static instance: ClientMap | null = null;
+  private static map: naver.maps.Map;
 
   constructor(_latitude: number, _longitude: number) {
-    const map = new naver.maps.Map("map", {
-      center: new naver.maps.LatLng(_latitude, _longitude),
-      zoom: 15,
-    });
-
-    this.map = map;
-
-    const circle = new naver.maps.Circle({
-      center: new naver.maps.LatLng(_latitude, _longitude),
-      fillColor: "red",
-      strokeColor: "black",
-      map: this.map,
-      radius: getMapCircleSize(map.getZoom()),
-      fillOpacity: 0.6,
-    });
-
-    this.circle = circle;
+    if (!ClientMap.instance) {
+      const map = new naver.maps.Map("map", {
+        center: new naver.maps.LatLng(_latitude, _longitude),
+        zoom: 15,
+      });
+      ClientMap.instance = this;
+      ClientMap.map = map;
+    }
+    return ClientMap.instance;
   }
 
   getMap() {
-    return this.map;
-  }
-
-  resizeCircle(zoom: number) {
-    this.circle.setRadius(getMapCircleSize(zoom));
+    return ClientMap.map;
   }
 }
