@@ -17,8 +17,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body className={notoSans.className}>{children}</body>
+    <html lang="ko" className="w-full h-full">
+      <head>
+        <script
+          defer
+          type="text/javascript"
+          src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_CLIENT_ID}`}
+        ></script>
+      </head>
+      <body className={`${notoSans.className} w-full h-full`}>{children}</body>
     </html>
   );
 }

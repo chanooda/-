@@ -1,9 +1,22 @@
 "use client";
 
-import { useLocation } from "@libs";
+import { ClientMap, useLocation } from "@libs";
+import { useEffect } from "react";
 
 export const Map = () => {
-  const {} = useLocation();
+  const { location } = useLocation();
 
-  return <div></div>;
+  useEffect(() => {
+    if (location) {
+      const clientMap = new ClientMap(location.latitude, location.longitude);
+
+      const map = clientMap.getMap();
+
+      map.addListener("zoom_changed", (zoom: number) => {
+        clientMap.resizeCircle(zoom);
+      });
+    }
+  });
+
+  return <div id="map" className="w-full h-full"></div>;
 };

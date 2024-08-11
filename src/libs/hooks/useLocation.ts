@@ -1,12 +1,17 @@
-import { useEffect } from "react";
+import { Location } from "@@types";
+import { useEffect, useState } from "react";
 
 export const useLocation = () => {
+  const [location, setLocation] = useState<Location | undefined>(undefined);
+
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          console.log("Latitude is :", position.coords.latitude);
-          console.log("Longitude is :", position.coords.longitude);
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
         },
         (error) => {
           console.error("Error Code = " + error.code + " - " + error.message);
@@ -16,5 +21,7 @@ export const useLocation = () => {
     }
   }, []);
 
-  return {};
+  return {
+    location,
+  };
 };
