@@ -1,22 +1,32 @@
 "use client";
 
 import { ClientMap, useLocation } from "@libs";
-import { useEffect } from "react";
+import { MapTrack } from "@libs/map/mapTrack.class";
+import { useEffect, useRef } from "react";
 
 export const Map = () => {
+  const initialFlag = useRef(false);
   const { location } = useLocation();
 
   useEffect(() => {
     if (location) {
-      const clientMap = new ClientMap(location.latitude, location.longitude);
+      const map = new ClientMap(location.latitude, location.longitude).getMap();
+      const mapTrack = new MapTrack(map);
 
-      const map = clientMap.getMap();
+      mapTrack.redrawPath(location.latitude, location.longitude);
 
-      map.addListener("zoom_changed", (zoom: number) => {
-        clientMap.resizeCircle(zoom);
-      });
+      const mapZoomChangedEvent = map.addListener(
+        "zoom_changed",
+        (zoom: number) => {
+          mapTrack.resizeCircle(zoom);
+        }
+      );
+
+      return () => {
+        map.removeListener(mapZoomChangedEvent);
+      };
     }
-  });
+  }, [location?.latitude, location?.longitude]);
 
   return <div id="map" className="w-full h-full"></div>;
 };

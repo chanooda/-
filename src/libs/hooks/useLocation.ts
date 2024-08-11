@@ -1,22 +1,18 @@
 import { Location } from "@@types";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 export const useLocation = () => {
   const [location, setLocation] = useState<Location | undefined>(undefined);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.error("Error Code = " + error.code + " - " + error.message);
-        }
-      );
+      navigator.geolocation.watchPosition((position) => {
+        console.log(position);
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      });
     } else {
     }
   }, []);
