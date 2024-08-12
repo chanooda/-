@@ -1,4 +1,5 @@
 import { Location } from "@@types";
+import { calculateDistance, MINIMUM_DISTANCE } from "@libs/map";
 import { useLayoutEffect, useState } from "react";
 
 export const useLocation = () => {
@@ -16,14 +17,26 @@ export const useLocation = () => {
           },
           (err) => {}
         );
+
+        return;
       }
 
       navigator.geolocation.watchPosition(
         (position) => {
-          setLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
+          const prevLat = location.latitude;
+          const prevLon = location.longitude;
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          const distance = calculateDistance(prevLat, prevLon, lat, lon);
+
+          console.log(distance);
+
+          if (MINIMUM_DISTANCE < distance)
+            setLocation({
+              latitude: lat,
+              longitude: lon,
+            });
         },
         (err) => {
           console.error("useLocation watchPosition 에러", err);
