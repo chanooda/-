@@ -47,7 +47,6 @@ export class MapTrack {
   }
 
   redrawPath(_latitude: number, _longitude: number) {
-    console.log(MapTrack.path.getPath());
     const newPathList = MapTrack.path.getPath();
     newPathList.push(new naver.maps.LatLng(_latitude, _longitude));
     MapTrack.path.setPath(newPathList);

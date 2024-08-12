@@ -6,13 +6,33 @@ export const useLocation = () => {
 
   useLayoutEffect(() => {
     if ("geolocation" in navigator) {
-      navigator.geolocation.watchPosition((position) => {
-        console.log(position);
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      });
+      if (!location) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLocation({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            });
+          },
+          (err) => {}
+        );
+      }
+
+      navigator.geolocation.watchPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        (err) => {
+          console.error("useLocation watchPosition 에러", err);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+        }
+      );
     } else {
     }
   }, []);

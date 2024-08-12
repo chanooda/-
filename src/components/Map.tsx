@@ -13,6 +13,7 @@ export const Map = () => {
       const mapTrack = new MapTrack(map);
 
       mapTrack.redrawPath(location.latitude, location.longitude);
+      mapTrack.redrawCircle(location.latitude, location.longitude);
 
       const mapZoomChangedEvent = map.addListener(
         "zoom_changed",
