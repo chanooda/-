@@ -1,20 +1,30 @@
 export class ClientMap {
-  private static instance: ClientMap | null = null;
-  private static map: naver.maps.Map;
+  private static instance: ClientMap;
+  private map: naver.maps.Map;
 
-  constructor(_latitude: number, _longitude: number) {
-    if (!ClientMap.instance) {
-      const map = new naver.maps.Map("map", {
-        center: new naver.maps.LatLng(_latitude, _longitude),
-        zoom: 15,
-      });
-      ClientMap.instance = this;
-      ClientMap.map = map;
-    }
-    return ClientMap.instance;
+  private constructor(coords: { latitude: number; longitude: number }) {
+    const map = new naver.maps.Map("map", {
+      center: new naver.maps.LatLng(coords.latitude, coords.longitude),
+      zoom: 15,
+    });
+
+    this.map = map;
   }
 
-  getMap() {
-    return ClientMap.map;
+  static getInstance(coords?: { latitude: number; longitude: number }) {
+    if (this.instance) {
+      return this.instance;
+    }
+
+    if (!coords) {
+      throw new Error("coords가 없습니다.");
+    }
+
+    this.instance = new ClientMap(coords);
+    return this.instance;
+  }
+
+  static getMap() {
+    return this.getInstance().map;
   }
 }
