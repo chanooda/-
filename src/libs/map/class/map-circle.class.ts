@@ -1,11 +1,11 @@
+import { getMapCircleSize } from "../map.const";
 import { ClientMap } from "./map.class";
-import { getMapCircleSize } from "./map.const";
 
 export class MapCircle {
   private circle: naver.maps.Circle;
 
   constructor() {
-    const map = ClientMap.getMap();
+    const map = ClientMap.get();
 
     const circle = new naver.maps.Circle({
       center: map.getCenter(),

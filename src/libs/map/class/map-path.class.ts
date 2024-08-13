@@ -4,7 +4,7 @@ export class MapPath {
   private path: naver.maps.Polyline;
 
   constructor() {
-    const map = ClientMap.getMap();
+    const map = ClientMap.get();
 
     const path = new naver.maps.Polyline({
       map,
@@ -13,7 +13,7 @@ export class MapPath {
       startIcon: 3,
       endIcon: 3,
       strokeOpacity: 0.6,
-      strokeColor: "red",
+      strokeColor: "green",
     });
 
     this.path = path;

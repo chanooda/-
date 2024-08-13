@@ -24,7 +24,7 @@ export class ClientMap {
     return this.instance;
   }
 
-  static getMap() {
+  static get() {
     return this.getInstance().map;
   }
 }

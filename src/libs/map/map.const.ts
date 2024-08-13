@@ -27,3 +27,10 @@ export const calculateDistance = (
 
   return R * c; // 거리 반환 (미터 단위)
 };
+
+export const watchPositionOptions: PositionOptions = {
+  enableHighAccuracy: true,
+  timeout: 5000,
+};
+
+export const pointTime = 60 * 5 * 1000;
