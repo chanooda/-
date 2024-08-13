@@ -33,4 +33,4 @@ export const watchPositionOptions: PositionOptions = {
   timeout: 5000,
 };
 
-export const pointTime = 60 * 5 * 1000;
+export const pointTime = 60 * 1 * 1000;

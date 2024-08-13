@@ -2,6 +2,7 @@ import { Coords } from "@@types";
 import {
   calculateDistance,
   ClientMap,
+  MapCircle,
   MapPath,
   MINIMUM_DISTANCE,
   pointTime,
@@ -49,12 +50,17 @@ export const useMap = () => {
 
     const timeoutId = setTimeout(() => {
       const newPath = new MapPath();
+      const newPoint = new MapCircle();
+      newPoint.redraw(lat, lon);
+      setPoints([...points, newPoint]);
       setPaths([...paths, newPath]);
+      console.log(newPath);
+      console.log(newPoint);
       clearTimeout(timeoutId);
     }, pointTime);
 
+    clearTimeout(timeoutId);
     if (MINIMUM_DISTANCE < distance) {
-      clearTimeout(timeoutId);
       paths[paths.length - 1].redraw(lat, lon);
       UserTrackMarker.redraw(lat, lon);
 
@@ -65,19 +71,27 @@ export const useMap = () => {
     }
   };
 
+  const currentPositionErrorCallback: PositionErrorCallback = (err) => {
+    console.error("getCurrentPosition 에러", err);
+  };
+
   const watchPositionErrorCallback: PositionErrorCallback = (err) => {
     console.error("geolocation 에러", err);
   };
 
   useLayoutEffect(() => {
     if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        currentPositionSuccessCallback,
-        watchPositionErrorCallback,
-        {
-          enableHighAccuracy: true,
-        }
-      );
+      if (!coords) {
+        navigator.geolocation.getCurrentPosition(
+          currentPositionSuccessCallback,
+          currentPositionErrorCallback,
+          {
+            enableHighAccuracy: true,
+          }
+        );
+
+        return;
+      }
 
       navigator.geolocation.watchPosition(
         watchPositionSuccessCallback,
