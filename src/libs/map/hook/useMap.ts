@@ -10,7 +10,7 @@ import {
   UserTrackMarker,
   watchPositionOptions,
 } from "@libs/map";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const useMap = () => {
   const [coords, setCoords] = useState<Coords | undefined>(undefined);
@@ -18,8 +18,23 @@ export const useMap = () => {
   const points = useMapStore((state) => state.data.point);
   const setPoints = useMapStore((state) => state.setPoint);
   const setPaths = useMapStore((state) => state.setPath);
+  const timeoutId = useRef<NodeJS.Timeout | undefined>(undefined);
+
+  const record = () => {
+    const newPath = new MapPath();
+    const newPoint = new MapCircle();
+    if (coords) {
+      newPoint.redraw(coords?.latitude, coords?.longitude);
+    }
+    setPoints([...points, newPoint]);
+    setPaths([...paths, newPath]);
+    console.log(newPath);
+    console.log(newPoint);
+    clearTimeout(timeoutId.current);
+  };
 
   const currentPositionSuccessCallback: PositionCallback = (position) => {
+    console.log("currentPosition", position);
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
 
@@ -39,6 +54,8 @@ export const useMap = () => {
   };
 
   const watchPositionSuccessCallback: PositionCallback = (position) => {
+    console.log("watchPosition", position);
+
     const prevLat = coords?.latitude || position.coords.latitude;
     const prevLon = coords?.longitude || position.coords.longitude;
     const lat = position.coords.latitude;
@@ -48,19 +65,14 @@ export const useMap = () => {
     console.log("watchPosition", lat, lon);
     console.log("distance", lat, lon);
 
-    const timeoutId = setTimeout(() => {
-      const newPath = new MapPath();
-      const newPoint = new MapCircle();
-      newPoint.redraw(lat, lon);
-      setPoints([...points, newPoint]);
-      setPaths([...paths, newPath]);
-      console.log(newPath);
-      console.log(newPoint);
-      clearTimeout(timeoutId);
+    timeoutId.current = setTimeout(() => {
+      record();
+      clearTimeout(timeoutId.current);
     }, pointTime);
 
-    clearTimeout(timeoutId);
     if (MINIMUM_DISTANCE < distance) {
+      clearTimeout(timeoutId.current);
+
       paths[paths.length - 1].redraw(lat, lon);
       UserTrackMarker.redraw(lat, lon);
 
@@ -79,7 +91,8 @@ export const useMap = () => {
     console.error("geolocation 에러", err);
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    console.log("init");
     if ("geolocation" in navigator) {
       if (!coords) {
         navigator.geolocation.getCurrentPosition(
